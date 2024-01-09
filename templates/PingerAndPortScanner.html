@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Integrated Pinger and Port Scanner</title>
+
+    <script>
+        function pingServer() {
+            sendRequest('/ping', 'result');
+        }
+
+        function scanPorts() {
+            sendRequest('/scan', 'result');
+        }
+
+        function sendRequest(endpoint, resultDivId) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var result = JSON.parse(this.responseText);
+                    document.getElementById(resultDivId).innerHTML = '<p>' + result.result.message + '</p>';
+                    // Additional logic to display specific information from the result object
+                    if (resultDivId === 'result' && result.result.stats) {
+                        document.getElementById(resultDivId).innerHTML += '<p>Minimum RTT: ' + result.result.stats.min_rtt + '</p>';
+                        document.getElementById(resultDivId).innerHTML += '<p>Maximum RTT: ' + result.result.stats.max_rtt + '</p>';
+                        document.getElementById(resultDivId).innerHTML += '<p>Average RTT: ' + result.result.stats.avg_rtt + '</p>';
+                        document.getElementById(resultDivId).innerHTML += '<p>Packet Loss Rate: ' + result.result.stats.packet_loss_rate + '%</p>';
+                    } else if (resultDivId === 'result' && result.result.open_ports) {
+                        document.getElementById(resultDivId).innerHTML += '<p>Open Ports: ' + result.result.open_ports.join(', ') + '</p>';
+                    }
+                }
+            };
+            xhttp.open("POST", endpoint, true);
+            xhttp.send();
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 100vh;
+            background: #050801;
+            font-family: 'Raleway', sans-serif;
+            font-weight: bold;
+            overflow: hidden;
+            background-image: radial-gradient(at 0% 100%, hsl(242, 100%, 70%) 0px, transparent 50%), radial-gradient(at 100% -90%, rgb(145, 255, 102) 0px, transparent 50%);
+        }
+
+        .container h1 {
+            color: #f6ff00;
+            font-size: 4em;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        #result {
+            color: white;
+            font-size: 1.5em;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .container h2 {
+            color: #f6ff00;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .container span {
+            display: flex;
+            /* flex-direction: column; */
+            justify-content: space-evenly;
+            /* width: 100vw; */
+        }
+
+        .container a {
+            position: relative;
+            display: inline-block;
+            padding: 25px 30px;
+            margin: 40px 0;
+            color: #03e9f4;
+            text-decoration: none;
+            text-transform: uppercase;
+            text-align: center;
+            transition: 0.5s;
+            letter-spacing: 4px;
+            overflow: hidden;
+            margin-right: 50px;
+
+        }
+
+        .container a:hover {
+            background: #03e9f4;
+            color: #050801;
+            box-shadow: 0 0 5px #03e9f4,
+                0 0 25px #03e9f4,
+                0 0 50px #03e9f4,
+                0 0 200px #03e9f4;
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #0005);
+        }
+
+        .container span:nth-child(3) a:nth-child(1) {
+            filter: hue-rotate(270deg);
+        }
+
+        .container a span {
+            position: absolute;
+            display: block;
+        }
+
+        .container a span:nth-child(1) {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #03e9f4);
+            animation: animate1 1s linear infinite;
+        }
+
+        @keyframes animate1 {
+            0% {
+                left: -100%;
+            }
+
+            50%,
+            100% {
+                left: 100%;
+            }
+        }
+
+        .container a span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #03e9f4);
+            animation: animate2 1s linear infinite;
+            animation-delay: 0.25s;
+        }
+
+        @keyframes animate2 {
+            0% {
+                top: -100%;
+            }
+
+            50%,
+            100% {
+                top: 100%;
+            }
+        }
+
+        .container a span:nth-child(3) {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, #03e9f4);
+            animation: animate3 1s linear infinite;
+            animation-delay: 0.50s;
+        }
+
+        @keyframes animate3 {
+            0% {
+                right: -100%;
+            }
+
+            50%,
+            100% {
+                right: 100%;
+            }
+        }
+
+
+        .container a span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(360deg, transparent, #03e9f4);
+            animation: animate4 1s linear infinite;
+            animation-delay: 0.75s;
+        }
+
+        @keyframes animate4 {
+            0% {
+                bottom: -100%;
+            }
+
+            50%,
+            100% {
+                bottom: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Integrated Pinger and Port Scanner</h1>
+        <h2>By Yehia Sharawy - 20100519</h2>
+        <span>
+            <a href="#port-scanner-btn" id="port-scanner-btn" onclick="scanPorts()">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Scan Ports
+            </a>
+        </span>
+
+        <span>
+            <a href="#pinger-btn" id="pinger-btn" onclick="pingServer()">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Ping Server
+            </a>
+        </span>
+        <div id="result"></div>
+    </div>
+</body>
+
+</html>
